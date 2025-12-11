@@ -6,12 +6,13 @@ import { LessonView } from './LessonView';
 import { ProfileView } from './ProfileView';
 import { LeaderboardView } from './LeaderboardView';
 import { QuestsView } from './QuestsView';
+import { MiniGamesView } from './MiniGamesView';
 import { Navigation } from '@/components/Navigation';
 import { User, UserStats, LessonResult } from '@/types';
 import { storageService } from '@/services/storageService';
 import { subjects, getSubjectById } from '@/data/subjects';
 
-type View = 'home' | 'learn' | 'lesson' | 'leaderboard' | 'quests' | 'profile';
+type View = 'home' | 'learn' | 'lesson' | 'leaderboard' | 'quests' | 'profile' | 'games';
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -109,6 +110,7 @@ const Index = () => {
       )}
       {currentView === 'leaderboard' && <LeaderboardView />}
       {currentView === 'quests' && <QuestsView />}
+      {currentView === 'games' && <MiniGamesView stats={stats} />}
       {currentView === 'profile' && (
         <ProfileView user={user} stats={stats} onLogout={handleLogout} />
       )}

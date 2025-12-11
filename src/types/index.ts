@@ -70,4 +70,18 @@ export interface LessonResult {
 
 export type MascotMood = 'happy' | 'thinking' | 'sleeping' | 'celebrating' | 'sad';
 
-export type TargetExam = 'CAT' | 'GRE' | 'GMAT' | 'BANK' | 'SSC' | 'GENERAL';
+export type TargetExam = 'CAT' | 'GRE' | 'GMAT' | 'BANK' | 'SSC' | 'GATE' | 'GENERAL';
+
+export interface MiniGameResult {
+  gameType: 'sudoku' | 'zip' | 'queens';
+  won: boolean;
+  gemsEarned: number;
+  timestamp: string;
+}
+
+export interface MiniGameStats {
+  sudokuWins: number;
+  zipWins: number;
+  queensWins: number;
+  totalGems: number;
+}

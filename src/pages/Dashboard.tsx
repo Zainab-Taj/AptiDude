@@ -6,7 +6,9 @@ import { SubjectCard } from '@/components/SubjectCard';
 import { subjects } from '@/data/subjects';
 import { UserStats } from '@/types';
 import { storageService } from '@/services/storageService';
+import { soundEffects } from '@/services/soundEffectsService';
 import { Sparkles, Shuffle } from 'lucide-react';
+import welcomeGif from '@/assets/welcome.gif';
 
 interface DashboardProps {
   stats: UserStats;
@@ -36,9 +38,9 @@ export const Dashboard = ({ stats, onSelectSubject, onStartDailyMix }: Dashboard
   };
 
   const getMascotMessage = () => {
-    if (stats.streak === 0) return "Let's start a streak today! 🔥";
-    if (stats.streak >= 7) return `Amazing! ${stats.streak} days in a row! 🌟`;
-    if (stats.hearts < 3) return "Low on hearts! Take it easy 💪";
+    if (stats.streak === 0) return "Hi I'm Dude! Your Learning Partner. Let's start a streak today! 🔥";
+    if (stats.streak >= 7) return `Hi I'm Dude! Your Learning Partner. Amazing! ${stats.streak} days in a row! 🌟`;
+    if (stats.hearts < 3) return "Hi I'm Dude! Your Learning Partner. Low on hearts! Take it easy 💪";
     return "Ready to learn something new? 📚";
   };
 
@@ -71,7 +73,7 @@ export const Dashboard = ({ stats, onSelectSubject, onStartDailyMix }: Dashboard
         className="mb-8"
       >
         <div className="bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 rounded-3xl p-6 flex items-center gap-4">
-          <Mascot mood="happy" size="lg" />
+          <Mascot mood="happy" size="lg" image={welcomeGif} />
           <div className="flex-1">
             <p className="font-bold text-foreground text-lg mb-2">
               {getMascotMessage()}
@@ -92,7 +94,10 @@ export const Dashboard = ({ stats, onSelectSubject, onStartDailyMix }: Dashboard
         className="mb-8"
       >
         <motion.button
-          onClick={onStartDailyMix}
+          onClick={() => {
+            soundEffects.playClickSound();
+            onStartDailyMix();
+          }}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-2xl p-5 shadow-lg flex items-center gap-4"

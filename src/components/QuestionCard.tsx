@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Question } from '@/types';
+import { soundEffects } from '@/services/soundEffectsService';
 
 interface QuestionCardProps {
   question: Question;
@@ -55,7 +56,12 @@ export const QuestionCard = ({
           return (
             <motion.button
               key={index}
-              onClick={() => !showResult && onSelect(index)}
+              onClick={() => {
+                if (!showResult) {
+                  soundEffects.playTouchSound();
+                  onSelect(index);
+                }
+              }}
               disabled={showResult}
               whileHover={!showResult ? { scale: 1.02 } : undefined}
               whileTap={!showResult ? { scale: 0.98 } : undefined}

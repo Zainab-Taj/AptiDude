@@ -5,6 +5,7 @@ import { LevelCircle } from '@/components/LevelCircle';
 import ComingSoon from '@/components/ComingSoon';
 import { Subject, Unit, Level, Progress } from '@/types';
 import { storageService } from '@/services/storageService';
+import { soundEffects } from '@/services/soundEffectsService';
 
 interface LearnViewProps {
   subject: Subject;
@@ -164,7 +165,10 @@ export const LearnView = ({ subject, onBack, onStartLevel }: LearnViewProps) => 
             >
               {/* Unit Header */}
               <motion.button
-                onClick={() => toggleUnit(unit.id)}
+                onClick={() => {
+                  soundEffects.playTouchSound();
+                  toggleUnit(unit.id);
+                }}
                 className="w-full p-5 flex items-center gap-4 text-left"
                 style={{ backgroundColor: `${unit.color}15` }}
               >

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Subject } from '@/types';
+import { soundEffects } from '@/services/soundEffectsService';
 
 interface SubjectCardProps {
   subject: Subject;
@@ -10,7 +11,10 @@ interface SubjectCardProps {
 export const SubjectCard = ({ subject, progress, onClick }: SubjectCardProps) => {
   return (
     <motion.button
-      onClick={onClick}
+      onClick={() => {
+        soundEffects.playClickSound();
+        onClick();
+      }}
       whileHover={{ scale: 1.02, y: -4 }}
       whileTap={{ scale: 0.98 }}
       className="w-full bg-card rounded-2xl p-5 shadow-lg border border-border hover:shadow-card-hover transition-all duration-300 text-left"

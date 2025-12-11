@@ -1,7 +1,9 @@
-# TODO: Add "Coming Soon" for Levels After 10
+# Fix Mascot Component Capitalization
 
-## Tasks
-- [x] Update Level type in src/types/index.ts to include 'coming_soon' status
-- [x] Modify createLevels function in src/data/subjects.ts to generate 15 levels and set 'coming_soon' for levels >10
-- [x] Update LevelCircle component in src/components/LevelCircle.tsx to visually indicate 'coming_soon' levels
-- [x] Test the changes to ensure proper display
+- [ ] Rename component and interface in Mascot.tsx
+- [ ] Update AuthView.tsx import and JSX usage
+- [ ] Update Dashboard.tsx import and JSX usage
+- [ ] Update LeaderboardView.tsx import and JSX usage
+- [ ] Update LessonView.tsx import and JSX usage
+- [ ] Update ProfileView.tsx import and JSX usage
+- [ ] Update QuestsView.tsx import and JSX usage

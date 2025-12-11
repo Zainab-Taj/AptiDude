@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import pawImage from '@/assets/paw.png';
 import { Level } from '@/types';
 import { Star, Lock } from 'lucide-react';
+import { soundEffects } from '@/services/soundEffectsService';
 
 interface LevelCircleProps {
   level: Level;

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import mascotImage from '@/assets/mascot.gif';
+import MascotImage from '@/assets/profile.gif';
 import { MascotMood } from '@/types';
 
 interface MascotProps {
@@ -7,6 +7,7 @@ interface MascotProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   message?: string;
   className?: string;
+  image?: string;
 }
 
 const sizeClasses = {
@@ -96,7 +97,9 @@ export const getRandomPhrase = (mood: 'happy' | 'sad'): string => {
   return phrases[Math.floor(Math.random() * phrases.length)];
 };
 
-export const Mascot = ({ mood = 'happy', size = 'md', message, className = '' }: MascotProps) => {
+export const Mascot = ({ mood = 'happy', size = 'md', message, className = '', image }: MascotProps) => {
+  const displayImage = image || MascotImage;
+  
   return (
     <div className={`flex flex-col items-center gap-3 ${className}`}>
       {message && (
@@ -114,8 +117,8 @@ export const Mascot = ({ mood = 'happy', size = 'md', message, className = '' }:
         className={`${sizeClasses[size]} relative`}
       >
         <img
-          src={mascotImage}
-          alt="Dude the cat mascot"
+          src={displayImage}
+          alt="Dude the cat Mascot"
           className="w-full h-full object-contain drop-shadow-lg"
         />
         {mood === 'sleeping' && (

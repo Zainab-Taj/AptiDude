@@ -7,6 +7,10 @@ import { QuestionCard } from '@/components/QuestionCard';
 import { Question, LessonResult, MascotMood, UserStats } from '@/types';
 import { geminiService } from '@/services/geminiService';
 import { storageService } from '@/services/storageService';
+import { soundEffects } from '@/services/soundEffectsService';
+import welcomeGif from '@/assets/welcome.gif';
+import happyGif from '@/assets/Happy.gif';
+import sadGif from '@/assets/Sad.gif';
 
 interface LessonViewProps {
   subjectId: string;
@@ -36,8 +40,9 @@ export const LessonView = ({
   const [xpEarned, setXpEarned] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [lessonComplete, setLessonComplete] = useState(false);
-  const [mascotMood, setMascotMood] = useState<MascotMood>('thinking');
-  const [mascotMessage, setMascotMessage] = useState<string>('');
+  const [MascotMood, setMascotMood] = useState<MascotMood>('thinking');
+  const [MascotMessage, setMascotMessage] = useState<string>('');
+  const [MascotImage, setMascotImage] = useState<string>(welcomeGif);
 
   useEffect(() => {
     const loadQuestions = async () => {
@@ -73,12 +78,16 @@ export const LessonView = ({
       setCorrectCount(prev => prev + 1);
       setXpEarned(prev => prev + 10);
       setMascotMood('celebrating');
+      setMascotImage(happyGif);
       setMascotMessage(getRandomPhrase('happy'));
+      soundEffects.playCorrectSound();
     } else {
       setHearts(prev => Math.max(0, prev - 1));
       storageService.loseHeart();
       setMascotMood('sad');
+      setMascotImage(sadGif);
       setMascotMessage(getRandomPhrase('sad'));
+      soundEffects.playWrongSound();
     }
   };
 
@@ -89,10 +98,12 @@ export const LessonView = ({
     }
 
     if (currentIndex < questions.length - 1) {
+      soundEffects.stopBackgroundAudio();
       setCurrentIndex(prev => prev + 1);
       setSelectedAnswer(null);
       setShowResult(false);
       setMascotMood('thinking');
+      setMascotImage(welcomeGif);
       setMascotMessage('');
     } else {
       finishLesson();
@@ -100,6 +111,7 @@ export const LessonView = ({
   };
 
   const finishLesson = () => {
+    soundEffects.stopBackgroundAudio();
     const result: LessonResult = {
       correct: correctCount,
       total: questions.length,
@@ -123,6 +135,14 @@ export const LessonView = ({
         ? "Great job, you're pawsome! 🐾"
         : "Keep practicing, you've got this! 💪"
     );
+
+    // Play appropriate sound
+    if (result.perfectScore) {
+      soundEffects.playWinSound();
+    } else if (correctCount > questions.length / 2) {
+      soundEffects.playCorrectSound();
+    }
+
     setLessonComplete(true);
   };
 
@@ -134,7 +154,7 @@ export const LessonView = ({
           animate={{ opacity: 1 }}
           className="text-center"
         >
-          <Mascot mood="thinking" size="xl" message="Preparing your lesson... 🐾" />
+          <Mascot mood="thinking" size="xl" message="Preparing your lesson... 🐾" image={welcomeGif} />
         </motion.div>
       </div>
     );
@@ -142,6 +162,7 @@ export const LessonView = ({
 
   if (lessonComplete) {
     const percentage = Math.round((correctCount / questions.length) * 100);
+    const completionImage = correctCount === questions.length ? happyGif : correctCount > questions.length / 2 ? welcomeGif : sadGif;
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -153,7 +174,8 @@ export const LessonView = ({
           <Mascot
             mood={correctCount === questions.length ? 'celebrating' : correctCount > questions.length / 2 ? 'happy' : 'sad'}
             size="xl"
-            message={mascotMessage}
+            message={MascotMessage}
+            image={completionImage}
           />
           <motion.h1
             initial={{ y: 20, opacity: 0 }}
@@ -220,7 +242,10 @@ export const LessonView = ({
       <header className="sticky top-0 z-40 bg-background border-b border-border px-4 py-3">
         <div className="flex items-center gap-4 max-w-5xl mx-auto">
           <motion.button
-            onClick={onExit}
+            onClick={() => {
+              soundEffects.stopBackgroundAudio();
+              onExit();
+            }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="p-2 rounded-xl hover:bg-muted transition-colors"
@@ -265,15 +290,15 @@ export const LessonView = ({
           </div>
 
           {/* Column 2 (Right Side on Desktop): Mascot */}
-          {/* Added sticky/self-start to keep mascot visible while scrolling questions */}
+          {/* Added sticky/self-start to keep Mascot visible while scrolling questions */}
           <div className="md:order-2 order-1 flex justify-center md:justify-end sticky top-24 self-start">
             <motion.div
-              key={`${mascotMood}-${currentIndex}`}
+              key={`${MascotMood}-${currentIndex}`}
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="text-center"
+              className="text-center w-full h-full flex items-center justify-center"
             >
-              <Mascot mood={mascotMood} size="md" message={showResult ? mascotMessage : undefined} />
+              <Mascot mood={MascotMood} size="xl" message={showResult ? MascotMessage : undefined} image={MascotImage} />
             </motion.div>
           </div>
         </div>
@@ -284,7 +309,10 @@ export const LessonView = ({
         <div className="max-w-5xl mx-auto">
           {!showResult ? (
             <motion.button
-              onClick={handleCheckAnswer}
+              onClick={() => {
+                soundEffects.playClickSound();
+                handleCheckAnswer();
+              }}
               disabled={selectedAnswer === null}
               whileHover={selectedAnswer !== null ? { scale: 1.02 } : undefined}
               whileTap={selectedAnswer !== null ? { scale: 0.98 } : undefined}
@@ -299,7 +327,11 @@ export const LessonView = ({
           ) : (
             <div className="flex gap-3">
               <motion.button
-                onClick={onExit}
+                onClick={() => {
+                  soundEffects.playClickSound();
+                  soundEffects.stopBackgroundAudio();
+                  onExit();
+                }}
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 whileHover={{ scale: 1.02 }}
@@ -310,7 +342,10 @@ export const LessonView = ({
                 Dashboard
               </motion.button>
               <motion.button
-                onClick={handleNext}
+                onClick={() => {
+                  soundEffects.playClickSound();
+                  handleNext();
+                }}
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 }}

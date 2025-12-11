@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Mascot } from '@/components/Mascot';
 import { User } from '@/types';
 import { storageService } from '@/services/storageService';
+import loginPgGif from '@/assets/loginpg.gif';
+import { Check, X } from 'lucide-react';
 
 interface AuthViewProps {
   onLogin: (user: User) => void;
@@ -15,6 +17,24 @@ export const AuthView = ({ onLogin }: AuthViewProps) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Password validation helpers
+  const passwordChecks = {
+    minLength: password.length >= 8,
+    hasLetter: /[a-zA-Z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSpecial: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+  };
+
+  const isPasswordValid = Object.values(passwordChecks).every(check => check);
+
+  // Username validation helpers
+  const usernameChecks = {
+    minLength: username.length >= 5,
+    validChars: /^[a-zA-Z_]*$/.test(username),
+  };
+
+  const isUsernameValid = Object.values(usernameChecks).every(check => check) || username === '';
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -24,8 +44,35 @@ export const AuthView = ({ onLogin }: AuthViewProps) => {
       return;
     }
 
-    if (!isLogin && username.length < 3) {
-      setError('Username must be at least 3 characters');
+    // Username validation for sign up
+    if (!isLogin) {
+      if (username.length < 5) {
+        setError('Username must be at least 5 characters');
+        return;
+      }
+      // Username should only contain letters and underscores
+      if (!/^[a-zA-Z_]+$/.test(username)) {
+        setError('Username can only contain letters and underscores');
+        return;
+      }
+    }
+
+    // Password validation
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
+    // Password must contain at least 1 letter, 1 number, and 1 special character
+    if (!/[a-zA-Z]/.test(password)) {
+      setError('Password must contain at least 1 letter');
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      setError('Password must contain at least 1 number');
+      return;
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      setError('Password must contain at least 1 special character (!@#$%^&* etc)');
       return;
     }
 
@@ -50,7 +97,7 @@ export const AuthView = ({ onLogin }: AuthViewProps) => {
       >
         {/* Logo & Mascot */}
         <div className="text-center mb-8">
-          <Mascot mood="happy" size="xl" />
+          <Mascot mood="happy" size="xl" image={loginPgGif} />
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -106,6 +153,7 @@ export const AuthView = ({ onLogin }: AuthViewProps) => {
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
+                className="space-y-2"
               >
                 <label className="block text-sm font-bold text-foreground mb-2">
                   Username
@@ -117,6 +165,18 @@ export const AuthView = ({ onLogin }: AuthViewProps) => {
                   placeholder="Choose a username"
                   className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary font-semibold"
                 />
+                {username && (
+                  <div className="space-y-1 text-xs mt-2">
+                    <div className={`flex items-center gap-2 ${usernameChecks.minLength ? 'text-green-600' : 'text-muted-foreground'}`}>
+                      {usernameChecks.minLength ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                      At least 5 characters
+                    </div>
+                    <div className={`flex items-center gap-2 ${usernameChecks.validChars ? 'text-green-600' : 'text-muted-foreground'}`}>
+                      {usernameChecks.validChars ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                      Only letters and underscores
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -133,7 +193,7 @@ export const AuthView = ({ onLogin }: AuthViewProps) => {
               />
             </div>
 
-            <div>
+            <div className="space-y-2">
               <label className="block text-sm font-bold text-foreground mb-2">
                 Password
               </label>
@@ -144,6 +204,26 @@ export const AuthView = ({ onLogin }: AuthViewProps) => {
                 placeholder="••••••••"
                 className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary font-semibold"
               />
+              {password && !isLogin && (
+                <div className="space-y-1 text-xs mt-2">
+                  <div className={`flex items-center gap-2 ${passwordChecks.minLength ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    {passwordChecks.minLength ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                    At least 8 characters
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordChecks.hasLetter ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    {passwordChecks.hasLetter ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                    At least 1 letter
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordChecks.hasNumber ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    {passwordChecks.hasNumber ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                    At least 1 number
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordChecks.hasSpecial ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    {passwordChecks.hasSpecial ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                    At least 1 special character (!@#$%^&* etc)
+                  </div>
+                </div>
+              )}
             </div>
 
             {error && (
@@ -160,7 +240,12 @@ export const AuthView = ({ onLogin }: AuthViewProps) => {
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-4 bg-primary text-primary-foreground rounded-2xl font-bold text-lg shadow-level mt-2"
+              disabled={!isLogin && (!isUsernameValid || !isPasswordValid)}
+              className={`w-full py-4 rounded-2xl font-bold text-lg shadow-level mt-2 transition-all ${
+                !isLogin && (!isUsernameValid || !isPasswordValid)
+                  ? 'bg-muted text-muted-foreground cursor-not-allowed opacity-60'
+                  : 'bg-primary text-primary-foreground'
+              }`}
             >
               {isLogin ? 'Log In' : 'Create Account'}
             </motion.button>

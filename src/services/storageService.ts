@@ -154,4 +154,44 @@ export const storageService = {
   setTargetExam: (exam: TargetExam): void => {
     localStorage.setItem(STORAGE_KEYS.TARGET_EXAM, exam);
   },
+
+  // Gems
+  addGems: (amount: number): UserStats => {
+    const stats = storageService.getStats();
+    stats.gems += amount;
+    storageService.setStats(stats);
+    return stats;
+  },
+
+  removeGems: (amount: number): UserStats => {
+    const stats = storageService.getStats();
+    stats.gems = Math.max(0, stats.gems - amount);
+    storageService.setStats(stats);
+    return stats;
+  },
+
+  // Hearts restoration
+  restoreHeart: (gemsPerHeart: number = 5): UserStats => {
+    const stats = storageService.getStats();
+    if (stats.gems >= gemsPerHeart && stats.hearts < stats.maxHearts) {
+      stats.gems -= gemsPerHeart;
+      stats.hearts += 1;
+      storageService.setStats(stats);
+    }
+    return stats;
+  },
+
+  restoreAllHearts: (gemsPerHeart: number = 5): UserStats => {
+    const stats = storageService.getStats();
+    const heartsNeeded = stats.maxHearts - stats.hearts;
+    const gemsCost = heartsNeeded * gemsPerHeart;
+    
+    if (stats.gems >= gemsCost) {
+      stats.gems -= gemsCost;
+      stats.hearts = stats.maxHearts;
+      storageService.setStats(stats);
+    }
+    return stats;
+  },
 };
+

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Scroll, Clock, Gift, Star, Zap } from 'lucide-react';
 import { Mascot } from '@/components/Mascot';
 import { ProgressBar } from '@/components/ProgressBar';
+import welcomeGif from '@/assets/welcome.gif';
 
 export const QuestsView = () => {
   const dailyQuests = [
@@ -83,7 +84,7 @@ export const QuestsView = () => {
         className="bg-gradient-to-br from-accent/20 to-primary/20 rounded-3xl p-6 mb-6"
       >
         <div className="flex items-center gap-4">
-          <Mascot mood="celebrating" size="md" />
+          <Mascot mood="celebrating" size="md" image={welcomeGif} />
           <div>
             <p className="font-bold text-foreground">🎮 Quests are coming!</p>
             <p className="text-sm text-muted-foreground mt-1">

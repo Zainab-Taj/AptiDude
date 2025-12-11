@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Home, BookOpen, Trophy, Scroll, User } from 'lucide-react';
+import { Home, BookOpen, Trophy, Scroll, User, Gamepad2 } from 'lucide-react';
+import { soundEffects } from '@/services/soundEffectsService';
 
 interface NavigationProps {
   activeTab: string;
@@ -9,8 +10,8 @@ interface NavigationProps {
 const navItems = [
   { id: 'home', label: 'Home', icon: Home },
   { id: 'learn', label: 'Learn', icon: BookOpen },
+  { id: 'games', label: 'Games', icon: Gamepad2 },
   { id: 'leaderboard', label: 'Ranks', icon: Trophy },
-  { id: 'quests', label: 'Quests', icon: Scroll },
   { id: 'profile', label: 'Profile', icon: User },
 ];
 
@@ -23,7 +24,10 @@ export const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
           return (
             <motion.button
               key={id}
-              onClick={() => onTabChange(id)}
+              onClick={() => {
+                soundEffects.playTouchSound();
+                onTabChange(id);
+              }}
               whileTap={{ scale: 0.9 }}
               className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all duration-200 ${
                 isActive
