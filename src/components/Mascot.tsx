@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import mascotImage from '@/assets/mascot.png';
+import mascotImage from '@/assets/mascot.gif';
 import { MascotMood } from '@/types';
 
 interface MascotProps {
@@ -50,6 +50,22 @@ const happyPhrases = [
   "Meow wow! 🎉",
   "You're meow-velous! 💫",
   "You're purrfect! 😻",
+  "Meowgical",
+  "Purrfectly happy",
+  "Furrtastic",
+  "Claw-some vibes",
+  "Pawsitively cheerful",
+  "Purrty amazing",
+  "Meowvelous day",
+  "Cat-titude queen",
+  "Furever joyful",
+  "Whisker-wonderful",
+  "Paws and smile",
+  "Purr-fect mood",
+  "Fuzzy and fabulous",
+  "Totally paw-some",
+  "Whiskerlicious",
+
 ];
 
 const sadPhrases = [
@@ -58,6 +74,21 @@ const sadPhrases = [
   "Stay paws-itive, even when things get ruff! 🐾",
   "Meow-tivate yourself! You can do it! 💫",
   "Purr-suade yourself to try again! 😺",
+  "Stay pawsitive 🐾",
+  "Keep clawing your way up 🐱",
+  "You’re purrfect just the way you are",
+  "Chase your dreams, not the laser",
+  "Believe in your inner meowgic",
+  "Pounce on every opportunity",
+  "Be fierce, be fluffy",
+  "One paw at a time",
+  "Turn your hiss into hustle",
+  "You’ve got purr-tential!",
+  "Stay curious like a kitten",
+  "Rise, stretch, conquer",
+  "Don’t stop till you’re meow-gical!",
+  "Climb high, land light",
+  "Shine with cat-titude 🌟",
 ];
 
 export const getRandomPhrase = (mood: 'happy' | 'sad'): string => {

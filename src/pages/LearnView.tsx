@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { LevelCircle } from '@/components/LevelCircle';
+import ComingSoon from '@/components/ComingSoon';
 import { Subject, Unit, Level, Progress } from '@/types';
 import { storageService } from '@/services/storageService';
 
@@ -15,12 +16,17 @@ export const LearnView = ({ subject, onBack, onStartLevel }: LearnViewProps) => 
   const [expandedUnits, setExpandedUnits] = useState<string[]>([subject.units[0]?.id || '']);
   const [progress, setProgress] = useState<Progress | null>(null);
 
-  useEffect(() => {
+  useEffect(() => { 
     const savedProgress = storageService.getProgress(subject.id);
     setProgress(savedProgress);
   }, [subject.id]);
 
   const getLevelStatus = (level: Level): 'locked' | 'current' | 'completed' => {
+    // Level 1 of any unit is always unlocked
+    if (level.order === 1) {
+      return progress?.completedLevels.includes(level.id) ? 'completed' : 'current';
+    }
+
     if (!progress) {
       // First level is current, rest are locked
       const allLevels = subject.units.flatMap(u => u.levels);
@@ -231,6 +237,19 @@ export const LearnView = ({ subject, onBack, onStartLevel }: LearnViewProps) => 
                         </motion.div>
                       );
                     })}
+                    {/* Coming Soon Message after level 10 */}
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: unit.levels.length * 0.05 }}
+                      className="absolute"
+                      style={{
+                        left: 280 / 2 + Math.sin(unit.levels.length * 0.8) * 80 - 40,
+                        top: unit.levels.length * 100 + 10
+                      }}
+                    >
+                      <ComingSoon />
+                    </motion.div>
                   </div>
                 </motion.div>
               )}

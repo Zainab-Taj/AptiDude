@@ -117,10 +117,10 @@ export const LessonView = ({
 
     setMascotMood(result.perfectScore ? 'celebrating' : correctCount > questions.length / 2 ? 'happy' : 'sad');
     setMascotMessage(
-      result.perfectScore 
-        ? "Absolutely meow-nificent! Perfect score! 🎉" 
-        : correctCount > questions.length / 2 
-        ? "Great job, you're pawsome! 🐾" 
+      result.perfectScore
+        ? "Absolutely meow-nificent! Perfect score! 🎉"
+        : correctCount > questions.length / 2
+        ? "Great job, you're pawsome! 🐾"
         : "Keep practicing, you've got this! 💪"
     );
     setLessonComplete(true);
@@ -142,7 +142,7 @@ export const LessonView = ({
 
   if (lessonComplete) {
     const percentage = Math.round((correctCount / questions.length) * 100);
-    
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <motion.div
@@ -216,9 +216,9 @@ export const LessonView = ({
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
+      {/* Header - Fixed to top, centered max-width content */}
       <header className="sticky top-0 z-40 bg-background border-b border-border px-4 py-3">
-        <div className="flex items-center gap-4 max-w-2xl mx-auto">
+        <div className="flex items-center gap-4 max-w-5xl mx-auto">
           <motion.button
             onClick={onExit}
             whileHover={{ scale: 1.1 }}
@@ -246,35 +246,42 @@ export const LessonView = ({
         </div>
       </header>
 
-      {/* Content - Scrollable */}
+      {/* Content - Two-Column Layout for Desktop, Single Column for Mobile */}
       <main className="flex-1 overflow-y-auto px-4 py-8 pb-32">
-        <div className="max-w-2xl mx-auto">
-          {/* Mascot */}
-          <motion.div
-            key={`${mascotMood}-${currentIndex}`}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="flex justify-center mb-6"
-          >
-            <Mascot mood={mascotMood} size="md" message={showResult ? mascotMessage : undefined} />
-          </motion.div>
+        {/* Main Content Grid: 2/3 width for Question, 1/3 for Mascot on MD screens and up */}
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8">
+          
+          {/* Column 1 (Left Side on Desktop): Question Card */}
+          <div className="md:order-1 order-2">
+            <AnimatePresence mode="wait">
+              <QuestionCard
+                key={currentQuestion.id}
+                question={currentQuestion}
+                selectedIndex={selectedAnswer}
+                showResult={showResult}
+                onSelect={handleSelectAnswer}
+              />
+            </AnimatePresence>
+          </div>
 
-          {/* Question */}
-          <AnimatePresence mode="wait">
-            <QuestionCard
-              key={currentQuestion.id}
-              question={currentQuestion}
-              selectedIndex={selectedAnswer}
-              showResult={showResult}
-              onSelect={handleSelectAnswer}
-            />
-          </AnimatePresence>
+          {/* Column 2 (Right Side on Desktop): Mascot */}
+          {/* Added sticky/self-start to keep mascot visible while scrolling questions */}
+          <div className="md:order-2 order-1 flex justify-center md:justify-end sticky top-24 self-start">
+            <motion.div
+              key={`${mascotMood}-${currentIndex}`}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="text-center"
+            >
+              <Mascot mood={mascotMood} size="md" message={showResult ? mascotMessage : undefined} />
+            </motion.div>
+          </div>
         </div>
       </main>
 
-      {/* Action Buttons - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border">
-        <div className="max-w-2xl mx-auto">
+      {/* Action Buttons - Fixed at bottom, centered max-width content */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border z-50">
+        <div className="max-w-5xl mx-auto">
           {!showResult ? (
             <motion.button
               onClick={handleCheckAnswer}

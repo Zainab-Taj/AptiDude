@@ -15,7 +15,7 @@ const statusStyles = {
   completed: 'cursor-pointer hover:scale-105',
 };
 
-export const LevelCircle = ({ level, onClick, isActive = false }: LevelCircleProps) => {
+const LevelCircle = ({ level, onClick, isActive = false }: LevelCircleProps) => {
   const isCompleted = level.status === 'completed';
   const isLocked = level.status === 'locked';
   const isCurrent = level.status === 'current';
@@ -48,6 +48,8 @@ export const LevelCircle = ({ level, onClick, isActive = false }: LevelCirclePro
           </div>
         )}
 
+
+
         {/* Star for completed levels */}
         {isCompleted && level.stars > 0 && (
           <motion.div
@@ -78,3 +80,5 @@ export const LevelCircle = ({ level, onClick, isActive = false }: LevelCirclePro
     </motion.button>
   );
 };
+
+export { LevelCircle };

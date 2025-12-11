@@ -57,6 +57,7 @@ export default {
         xp: "hsl(var(--xp))",
         gold: "hsl(var(--gold))",
         locked: "hsl(var(--locked))",
+        "coming-soon": "hsl(var(--muted))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -75,7 +76,8 @@ export default {
         xl: "calc(var(--radius) + 4px)",
         "2xl": "calc(var(--radius) + 8px)",
       },
-      keyframes: {
+      keyframes: 
+      {
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
